@@ -1,2 +1,6 @@
 venv/
+runs/
+logs/
+tests/
 *egg-info/
+*.pt
