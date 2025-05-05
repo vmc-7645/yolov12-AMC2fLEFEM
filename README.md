@@ -1,8 +1,6 @@
+# YOLOv12-AMC2fLEFEM
 
-
-<div align="center">
-<h1>YOLOv12-AMC2fLEFEM</h1>
-<h3>YOLOv12-AMC2fLEFEM: Attention-Centric Real-Time Object Detectors With Novel Low Light Object Detection</h3>
+YOLOv12-AMC2fLEFEM: Attention-Centric Real-Time Object Detectors With Novel Low Light Object Detection</h3>
 
 
 ## Acknowledgement
