@@ -1,24 +1,2 @@
-# ── Python artefacts ───────────────────────────
-*.py[cod]
-__pycache__/
-
-# ── Virtual environments ───────────────────────
 venv/
-.venv/
-.env/
-
-# ── Packaging / build folders ──────────────────
-*.egg-info/
-build/
-dist/
-
-# ── Training artefacts ─────────────────
-runs/               # Ultralytics experiment logs
-*.pt                # PyTorch weight files
-*.onnx
-*.tflite
-*.jpg
-*.png
-
-# ── Data cache ─────────────────────────
-datasets/
+*egg-info/
