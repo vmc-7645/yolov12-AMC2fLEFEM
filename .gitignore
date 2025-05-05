@@ -11,3 +11,14 @@ venv/
 *.egg-info/
 build/
 dist/
+
+# ── Training artefacts ─────────────────
+runs/               # Ultralytics experiment logs
+*.pt                # PyTorch weight files
+*.onnx
+*.tflite
+*.jpg
+*.png
+
+# ── Data cache ─────────────────────────
+datasets/
