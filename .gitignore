@@ -1,0 +1,13 @@
+# ── Python artefacts ───────────────────────────
+*.py[cod]
+__pycache__/
+
+# ── Virtual environments ───────────────────────
+venv/
+.venv/
+.env/
+
+# ── Packaging / build folders ──────────────────
+*.egg-info/
+build/
+dist/
