@@ -35,6 +35,13 @@ class LEF(nn.Module):
         self.pool4 = nn.AdaptiveAvgPool2d(6)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:  # [B,C,H,W]
+        """
+        Args:
+            x (torch.Tensor): Input tensor of shape (B, C, H, W).
+
+        Returns:
+            torch.Tensor: Output tensor of shape (B, 4C, H, W).
+        """
         h, w = x.shape[2:]
         p1 = F.interpolate(self.pool1(x), (h, w), mode="bilinear", align_corners=False)
         p2 = F.interpolate(self.pool2(x), (h, w), mode="bilinear", align_corners=False)
@@ -44,13 +51,21 @@ class LEF(nn.Module):
 
 
 class FEM(nn.Module):
-    """Fuse the original and LEF tensors with a 1×1 conv."""
+    """Fuse the original and LEF tensors with a 1x1 conv."""
 
     def __init__(self, c: int) -> None:
         super().__init__()
         self.conv = nn.Conv2d(c * 5, c, 1, bias=False)
 
     def forward(self, x: torch.Tensor, lef: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            x (torch.Tensor): Input tensor of shape (B, C1, H, W).
+            lef (torch.Tensor): LEF tensor of shape (B, C2, H, W).
+
+        Returns:
+            torch.Tensor: Output tensor of shape (B, C2, H, W).
+        """
         return self.conv(torch.cat([x, lef], dim=1))
 
 
@@ -62,6 +77,13 @@ class SimAM(nn.Module):
         self.lam = lam
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            x (torch.Tensor): Input tensor of shape (B, C1, H, W).
+
+        Returns:
+            torch.Tensor: Output tensor of shape (B, C2, H, W).
+        """
         n = x.shape[2] * x.shape[3] - 1
         x_mu = x.mean(dim=[2, 3], keepdim=True)
         var = ((x - x_mu) ** 2).sum(dim=[2, 3], keepdim=True) / n
@@ -100,6 +122,13 @@ class C2fLEFEM(nn.Module):
 
     # ---- forward -------------------------------------------------------- #
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            x (torch.Tensor): Input tensor of shape (B, C1, H, W).
+
+        Returns:
+            torch.Tensor: Output tensor of shape (B, C2, H, W).
+        """
         if not self.built:  # first time only
             self._build(x.size(1))
         x = self.act(self.bn(self.proj(x)))
@@ -113,19 +142,28 @@ class C2fLEFEM(nn.Module):
 
 # ultralytics/nn/modules/amc2flefem.py
 class AMC2fLEFEM(nn.Module):
+    """AMC2fLEFEM module with SimAM attention."""
+
     def __init__(self, c1, c2, shortcut=True, e=0.5):
-        """c1 = in‑ch,  c2 = *compressed* out‑ch from YAML (already width‑scaled)."""
         super().__init__()
-        c_ = max(int(c2 * e), 1)              # hidden width
+        c_ = max(int(c2 * e), 1)
         self.cv1 = Conv(c1, c_, 1, 1)
         self.cv2 = Conv(c_, c_, 3, 1)
         self.lef = LEF()
         self.fem = FEM(c_)
         self.attn = SimAM()
-        self.cv3 = Conv(c_, c2, 1, 1)         # <- **force output to c2**
-        self.add  = shortcut and c1 == c2
-        self.out_channels = c2                # parse_model already expects this
+        self.cv3 = Conv(c_, c2, 1, 1)  # ← force compressed width
+        self.add = shortcut and c1 == c2
+        self.out_channels = c2
+
     def forward(self, x):
+        """
+        Args:
+            x (torch.Tensor): Input tensor of shape (B, C1, H, W).
+
+        Returns:
+            torch.Tensor: Output tensor of shape (B, C2, H, W).
+        """
         y = self.cv2(self.cv1(x))
         y = self.fem(y, self.lef(y))
         y = self.attn(y)

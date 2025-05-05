@@ -4,3 +4,4 @@ logs/
 tests/
 *egg-info/
 *.pt
+*.onnx
