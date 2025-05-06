@@ -2,6 +2,10 @@
 
 YOLOv12-AMC2fLEFEM: Attention-Centric Real-Time Object Detectors With Novel Low Light Object Detection
 
+## Preliminary Results
+
+Performs 20% better than YOLOv12 base fine-tuning on [UNLISTED] low contrast dataset.
+
 ## Install
 
 ```bash
@@ -19,6 +23,12 @@ pip install -r requirements.txt
 yolo train model=/home/user/repos/yolov12-AMC2fLEFEM/ultralytics/cfg/models/v12/yolov12n.yaml data=/home/user/repos/LSModels/utility/dataset/data.yaml epochs=16 imgsz=640
 ```
 
+## Export
+
+```bash
+python3 toonnx.py
+```
+
 ## Acknowledgement
 
 The code is based on [ultralytics](https://github.com/ultralytics/ultralytics). Thanks for their excellent work!
@@ -33,4 +43,3 @@ The code is based on [ultralytics](https://github.com/ultralytics/ultralytics). 
   year={2025}
 }
 ```
-
