@@ -7,8 +7,8 @@ from ultralytics import YOLO
 from ultralytics.nn.modules.amc2flefem import LEF     # adjust if path differs
 
 # ─── config ────────────────────────────────────────────────────────────────
-PT   = Path("runs/detect/train10/weights/best.pt")   # trained checkpoint
-IMGSZ = (640, 640)                                   # image size you’ll export at
+PT   = Path("runs/detect/train15/weights/best.pt")   # trained checkpoint
+IMGSZ = (1280, 1280)                                   # image size you’ll export at
 ONNX_OUT = "drone_best_dynamic.onnx"
 # --------------------------------------------------------------------------
 
@@ -52,8 +52,9 @@ name = yolo.export(
     opset    =17,
     imgsz    =IMGSZ,
     batch    =1,
-    dynamic  =True,
-    simplify =True,
+    dynamic  =False,
+    # dynamic  =True,
+    # simplify =True,
     half     =False,
     # fname    =ONNX_OUT,
 )

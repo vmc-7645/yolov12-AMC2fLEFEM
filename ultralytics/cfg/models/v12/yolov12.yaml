@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------- #
 
 # ------------------------------- globals ----------------------------------- #
-nc: 80          # number of classes
+nc: 1          # number of classes
 
 scales:    # [depth_multiplier, width_multiplier, max_channels]
   n: [0.50, 0.25, 1024]    # 6.2 GFLOPs
@@ -37,15 +37,15 @@ backbone:
 head:
   - [-1, 1, nn.Upsample, [None, 2, nearest]]
   - [[-1, 6], 1, Concat, [1]]
-  - [-1, 2, AMC2fLEFEM,  [512, True, 0.5]]   # scales to 128 @ ‑n
+  - [-1, 2, AMC2fLEFEM,  [512, True, 0.75]]   # scales to 128 @ ‑n
 
   - [-1, 1, nn.Upsample, [None, 2, nearest]]
   - [[-1, 4], 1, Concat, [1]]
-  - [-1, 2, AMC2fLEFEM,  [256, True, 0.5]]   # → 64
+  - [-1, 2, AMC2fLEFEM,  [256, True, 0.75]]   # → 64
 
   - [-1, 1, Conv,       [256, 3, 2]]
   - [[-1, 11], 1, Concat, [1]]
-  - [-1, 2, AMC2fLEFEM,  [512, True, 0.5]]   # → 128
+  - [-1, 2, AMC2fLEFEM,  [512, True, 0.75]]   # → 128
 
   - [-1, 1, Conv,       [512, 3, 2]]
   - [[-1, 8], 1, Concat, [1]]

@@ -30,9 +30,9 @@ class LEF(nn.Module):
     def __init__(self) -> None:
         super().__init__()
         self.pool1 = nn.AdaptiveAvgPool2d(1)
-        self.pool2 = nn.AdaptiveAvgPool2d(2)
-        self.pool3 = nn.AdaptiveAvgPool2d(3)
-        self.pool4 = nn.AdaptiveAvgPool2d(6)
+        self.pool2 = nn.AdaptiveAvgPool2d(4)
+        self.pool3 = nn.AdaptiveAvgPool2d(8)
+        self.pool4 = nn.AdaptiveAvgPool2d(12)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:  # [B,C,H,W]
         """
@@ -152,9 +152,11 @@ class AMC2fLEFEM(nn.Module):
         self.lef = LEF()
         self.fem = FEM(c_)
         self.attn = SimAM()
-        self.cv3 = Conv(c_, c2, 1, 1)  # <-- force compressed width
+        self.cv3 = Conv(c_, c2, 1, 1)  # ← force compressed width
         self.add = shortcut and c1 == c2
         self.out_channels = c2
+        self.bn2 = nn.BatchNorm2d(c_)
+        self.act = nn.SiLU(inplace=True)
 
     def forward(self, x):
         """
@@ -166,6 +168,7 @@ class AMC2fLEFEM(nn.Module):
         """
         y = self.cv2(self.cv1(x))
         y = self.fem(y, self.lef(y))
+        y = self.act(self.bn2(y))
         y = self.attn(y)
         y = self.cv3(y)
         return x + y if self.add else y

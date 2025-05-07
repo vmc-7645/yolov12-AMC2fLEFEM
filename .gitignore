@@ -5,3 +5,4 @@ tests/
 *egg-info/
 *.pt
 *.onnx
+*.pyc
